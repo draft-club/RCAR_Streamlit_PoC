@@ -1,0 +1,5 @@
+This list of cols [INPUT COLS HERE] matches this list of cols [OUTPUT COLS HERE]
+رقم القطع الاراضية في تصمم matches رقم القطع الأرضية
+مساحة بالمتر المربع شامل matches مساحتها بالمتر المربع
+أسماء الملاك matches أسماء المالكين المعترضين
+مبلغ التعويض المستحق matches التعويض المستحق بالدرهم

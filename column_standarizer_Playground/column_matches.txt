@@ -1,0 +1,7 @@
+This list of cols [INPUT COLS HERE] matches this list of cols [OUTPUT COLS HERE]
+رقم القطع الاراضية في تصمم matches رقم القطع الأرضية
+مساحة بالمتر المربع شامل matches التعويض المستحق بالدرهم
+أسماء الملاك matches أسماء الملاك
+مبلغ التعويض المستحق matches التعويض المستحق بالدرهم
+عدد السكان matches عدد السكان
+الطقس اليوم matches الطقس اليوم

@@ -1,0 +1,14 @@
+pytesseract
+Pillow
+PyYAML
+PyMuPDF
+opencv-python-headless
+numpy
+transformers
+timm
+pandas
+openpyxl
+openai
+streamlit
+scikit-learn
+
