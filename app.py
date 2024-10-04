@@ -17,7 +17,12 @@ from textify_docs.tables.table_extracter import extract_tables_from_image_as_dic
 from openai import OpenAI, APIConnectionError, RateLimitError
 import json
 import os
-from column_standarizer import standarize
+
+from openai_local.refrence_dictionaries.target_fields import expropriation_data
+from openai_local.utils import get_field_from_text ,setup_openai
+import pandas as pd
+import io
+from openai_local.prompts import MAIN_PROMPT
 
 # Load configuration
 config = load_config()
@@ -127,13 +132,6 @@ if uploaded_file is not None:
         #cols_to_keep_list=REFERENCE_COLUMNS
         #standarized_names_list = standarize.standardize_columns(input_columns_list)
 
-        """try:
-            df.columns=standarized_names_list
-            # Keep only the columns that are in cols_to_keep_list
-            df = df[df.columns.intersection(cols_to_keep_list)]
-        except :
-            pass"""
-
 
         # Step 7: Extract text
         status_text.text(STAGES[6])
@@ -144,24 +142,38 @@ if uploaded_file is not None:
 
         # Step 8: Convert output to JSON
         status_text.text(STAGES[7])
+        # Assuming json_output is a list of dictionaries (like orient="records")
         json_output = df.to_dict(orient="records")
-        progress_bar.progress(8 / len(STAGES))
 
+        # Convert json_output back to a DataFrame
+        df_from_json = pd.DataFrame(json_output)
+
+        # Export to an Excel file with column names in the first row
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            df_from_json.to_excel(writer, index=False, header=True)  # 'header=True' ensures columns are in the first row
+
+        # Get the Excel file bytes
+        excel_data = output.getvalue()
+
+
+        # The progress bar update should be kept in your code, example:
+        progress_bar.progress(8 / len(STAGES))
         # Step 9: Extract fields
         status_text.text(STAGES[8])
         extracted_fields_dict = {"Texts": extracted_text, "Tables": json_output}
         progress_bar.progress(9 / len(STAGES))
 
         # Step 10: Analyse LLM Response
-        from .openai_local.refrence_dictionaries.target_fields import expropriation_data
-        from .openai_local.utils import get_field_from_text ,setup_openai
-        import pandas as pd
-        import io
+        status_text.text(STAGES[8])
+        progress_bar.progress(10 / len(STAGES))
+
         # Initialize OpenAI client with API key
         client = OpenAI(api_key=setup_openai())
         # Mock text and table data
         TEXT = extracted_text
-        TABLE = json_output
+        TABLE = extracted_text # placeholder for now
+
 
         # Create an empty list to store the results
         results = []
@@ -169,16 +181,17 @@ if uploaded_file is not None:
         # Loop over the dictionary values and get the response for each field
         for item in expropriation_data:
             field = item.get("field")
+            field_prompt = item.get("field_prompt")
             lookuptext = item.get("lookuptext")
-            dynamic = item.get("dynamic", False)
-            default_value = item.get("default_value", "N/A")
+            dynamic = item.get("dynamic")
+            default_value = item.get("default_value")
             # If the field is dynamic
             if dynamic:
                 if lookuptext == "table":
-                    response = get_field_from_text(client, TABLE, field)
+                    response = get_field_from_text(client,MAIN_PROMPT,field_prompt, TABLE, field)
                 else:
                     # Use text data
-                    response = get_field_from_text(client, TEXT, field)
+                    response = get_field_from_text(client,MAIN_PROMPT,field_prompt, TEXT, field)
             else:# If not dynamic, use default value
                 response = default_value
                 # Append the result to the list
@@ -188,19 +201,14 @@ if uploaded_file is not None:
         # Convert the results into a DataFrame
         df = pd.DataFrame(results)
         st.dataframe(results)
-
-        # Print the DataFrame
-        #print(df)
-
         # Export the DataFrame to an Excel file
         df.to_excel('expropriation_data_results.xlsx', index=False)
-        #print("Data has been exported to 'expropriation_data_results.xlsx'.")
-        progress_bar.progress(10/ len(STAGES))
-
+        progress_bar.progress(10 / len(STAGES))
         # Display final output
         st.success("Processing completed!")
-        #st.subheader("Extracted Table Data (first 10 rows):")
-        #st.dataframe(df.head(10))
+        # Display the DataFrame on the screen
+        st.write("### Expropriation Data Results")
+        st.dataframe(df)
 
         # Provide download link for JSON
         json_string = json.dumps(extracted_fields_dict, ensure_ascii=False, indent=4)
@@ -209,20 +217,16 @@ if uploaded_file is not None:
         output = io.BytesIO()
         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
             df.to_excel(writer, index=False)
-            writer.save()
 
-        # Rewind the buffer to the beginning
-        output.seek(0)
-        # Create a download button to download the Excel file
-        st.download_button(
-            label="Download Excel Output",
-            data=output,
-            file_name="extracted_data.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
+# Rewind the buffer to the beginning
+output.seek(0)
 
-        #st.subheader("Extracted Fields:")
-        #st.json(json_output)
-
+# Create a download button to download the Excel file
+st.download_button(
+    label="Download Excel Output",
+    data=output,
+    file_name="extracted_data.xlsx",
+    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
 else:
     st.info("Please upload a PDF document to begin.")

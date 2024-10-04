@@ -11,4 +11,4 @@ openpyxl
 openai
 streamlit
 scikit-learn
-
+xlsxwriter

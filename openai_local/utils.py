@@ -4,7 +4,7 @@ from openai import RateLimitError, APIConnectionError  # OpenAI error handling
 import time  # For sleep during retries
 import streamlit as st  # If you're using Streamlit to display messages (warnings)
 from config import  load_config
-from prompts import MAIN_PROMPT,FIELD_PROMPT
+
 
 
 # Load the config and instantiate the OpenAI client
@@ -44,14 +44,14 @@ def retry_on_error(max_retries=5):
 
 # The original function that enhances Arabic text
 @retry_on_error(max_retries=5)  # Apply the retry decorator to this function
-def get_field_from_text(openai_client, text,field):
+def get_field_from_text(openai_client ='', MAIN_PROMPT='',field_promt='', text='',field =''):
     """Enhances and corrects Arabic text using GPT-4."""
     client = openai_client
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": (MAIN_PROMPT)},
-            {"role": "user", "content": f" {FIELD_PROMPT} : {field} in this text : {text}"}
+            {"role": "user", "content": f" {field_promt} : {field} in this text : {text}"}
         ]
     )
     return response.choices[0].message.content
