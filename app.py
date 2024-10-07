@@ -205,16 +205,14 @@ if uploaded_file is not None:
         output = io.BytesIO()
         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
             df.to_excel(writer, index=False)
-
-# Rewind the buffer to the beginning
-output.seek(0)
-
-# Create a download button to download the Excel file
-st.download_button(
-    label="Download Excel Output",
-    data=output,
-    file_name="extracted_data.xlsx",
-    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-)
+        # Rewind the buffer to the beginning
+        output.seek(0)
+        # Create a download button to download the Excel file
+        st.download_button(
+            label="Download Excel Output",
+            data=output,
+            file_name="extracted_data.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
 else:
     st.info("Please upload a PDF document to begin.")
