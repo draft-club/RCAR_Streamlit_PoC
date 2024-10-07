@@ -5,6 +5,7 @@ from PIL import Image, ImageEnhance
 
 from column_standarizer.constants import REFERENCE_COLUMNS
 from new_main_2 import preprocess_image
+from streamlit_app.app import STAGES
 from utils import (
     read_pdfs_from_folder,
     convert_pdf_to_images,
@@ -26,30 +27,17 @@ from openai_local.prompts import MAIN_PROMPT
 
 # Load configuration
 config = load_config()
+from app_css import APP_CSS
+from constants import STAGES
 
 
 
 # App name
-st.title("RCAR E-Consignation Proof of Concept")
+#st.title("RCAR E-Consignation Proof of Concept")
 
-# Progress stages
-STAGES = [
-    "Converting PDF to images",
-    "Enhancing image quality and contrast",
-    "Removing header and footer",
-    "Detecting tables",
-    "Merging tables",
-    "Normalizing columns",
-    "Extracting text",
-    "Converting output to JSON",
-    "Extracting fields",
-    "Loading LLM response",
-    "Exporting to excel",
-    "Analyse LLM Response"
-]
-
-
-
+st.set_page_config(page_title="RCAR E-Consignation Proof of Concept", page_icon=":keyboard:")
+custom_css = APP_CSS
+st.markdown(custom_css, unsafe_allow_html=True)
 
 # File upload control
 uploaded_file = st.file_uploader("Upload a PDF document", type="pdf")
