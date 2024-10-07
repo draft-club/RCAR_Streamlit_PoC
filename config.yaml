@@ -3,4 +3,4 @@ language: 'ara'
 tesseract_config : '--psm 3 --oem 3'
 header_margin: 80
 footer_margin: 80
-openai_api_key: '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'
+openai_api_key: ''
