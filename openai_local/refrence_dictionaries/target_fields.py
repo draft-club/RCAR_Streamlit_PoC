@@ -49,17 +49,16 @@ class FieldPrompts:
     Num_Bulletin_Officiel_prompt = (
         "Please enter the number of the official bulletin where this expropriation was published. "
         "This field's name in Arabic is 'الجريدة الرسمية' "
-        "Only return the field if the term is present in the text; otherwise, return 'N/A'."
-        "This is a legal identifier found in official documents.The expected format is '2.22.645'."
-        "This field's name in Arabic is 'مرسوم'. The sentence format you are looking for is 'x.x.xxx مرسوم رقم'. "
-        "If you find a sentence such as 'تبعا للمرسوم رقم 2.22.645', extract and return '2.22.645' as the value for this field."
+        "Only return the field if the term 'الجريدة الرسمية' is present in the text; otherwise, return 'N/A'."
+        "This is a legal identifier found in official documents."
 
     )
 
     Date_Bulletin_Officiel_prompt = (
         "Provide the date when the expropriation was published in the official bulletin."
-        "Ensure the format is DD/MM/YYYY.  this field's name in arabic is 'الجريدة الرسمية ')"
-        "Only return the field if the term is present in the text ***example**  if teh sentence : الصادر بالجريدة الرسمية رقم 6545 بتاريخ 23/02/2023"
+        "Ensure the format is DD/MM/YYYY.  this field's name in arabic is 'الجريدة الرسمية)"
+        "Only return the field if the term :**الجريدة الرسمية** is present/found , otherwise return NA"
+        " in the text ***example**  if the sentence : الصادر بالجريدة الرسمية رقم 6545 بتاريخ 23/02/2023"
         "is found : then the answer should be 23/02/2023"
 
     )
@@ -112,7 +111,7 @@ class FieldPrompts:
     )
 
     Nom_Prénom_and_CIN_prompt = (
-        "Get all the names in the table accurately. "
+        "Get all the names in the table accurately.list them in bullet points format"
         "If a name is accompanied by a CIN (National ID) or a number, include that as well."
     )
 
