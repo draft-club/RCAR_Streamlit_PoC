@@ -1,4 +1,4 @@
-dpi: 300
+dpi: 600  # Enhanced DPI for improved OCR accuracy
 language: 'ara+fra'  # Add multiple languages
 tesseract_config: '--psm 3 --oem 3'
 header_margin: 80
