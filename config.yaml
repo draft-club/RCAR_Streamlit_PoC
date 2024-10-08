@@ -1,6 +1,6 @@
 dpi: 300
-language: 'ara'
-tesseract_config : '--psm 3 --oem 3'
+language: 'ara+fra'  # Add multiple languages
+tesseract_config: '--psm 3 --oem 3'
 header_margin: 80
 footer_margin: 80
 openai_api_key: ''
