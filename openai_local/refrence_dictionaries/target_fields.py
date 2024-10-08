@@ -80,7 +80,7 @@ class FieldPrompts:
     )
 
     Montant_Total_Projet_prompt = (
-        "Provide the total financial cost of the project in Moroccan DH. "
+        "State the total cost of the project in Moroccan DH. write it from left to right "
         "Answer only with the amount."
     )
 
@@ -299,7 +299,7 @@ expropriation_data = [
         "dynamic": True,
         "default_value": "N/A",
         "description": "The locality or area where the project is located.",
-        "regex": r"^[A-Za-z\s]+$"
+        "regex": ''
     },
     {
         "field": "identifiant fiscal",
@@ -307,7 +307,7 @@ expropriation_data = [
         "field_prompt": FieldPrompts.Identifiant_Fiscal_prompt,
         "dynamic": True,
         "default_value": "N/A",
-        "description": "The fiscal identifier (IF) associated with companies involved in the project.",
+        "description": "The fiscal identifier associated with companies involved in the project.",
         "regex": r"^\d{5,12}$"
     }
 ]

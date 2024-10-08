@@ -115,7 +115,7 @@ if uploaded_file is not None:
         # Step 6: Normalize columns
         input_columns_list = df.columns.to_list()
         # Assuming a column standardization function exists
-        # standardized_names_list = standardize_columns(input_columns_list)
+        #standardized_names_list = standardize_columns(input_columns_list)
 
         # Step 7: Extract text
         status_text.text(STAGES[6])
@@ -150,7 +150,7 @@ if uploaded_file is not None:
         results = []
 
         TEXT = extracted_text
-        TABLE = json_output
+        TABLE = extracted_text
 
         for item in expropriation_data:
             field = item.get("field")
