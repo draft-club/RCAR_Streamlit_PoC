@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b1a093ed-5550-49c3-8b8b-3f53d889e50d" name="Changes" comment="" />
+    <list default="true" id="b1a093ed-5550-49c3-8b8b-3f53d889e50d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/datafiles/extracted_text/DECISION  CONSIGNATION RADEEF_20240930_013624_extracted.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datafiles/extracted_text/DECISION  CONSIGNATION RADEEF_20241007_145552_extracted.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datafiles/extracted_text/DECISION  CONSIGNATION RADEEF_20241007_152125_extracted.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datafiles/extracted_text/DECISION  CONSIGNATION RADEEF_20241007_152201_extracted.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datafiles/extracted_text/DECISION  CONSIGNATION RADEEF_20241007_153403_extracted.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datafiles/extracted_text/DECISION  CONSIGNATION RADEEF_20241007_154949_extracted.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datafiles/extracted_text/DECISION  CONSIGNATION RADEEF_20241008_094326_extracted.txt" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

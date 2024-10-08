@@ -1,10 +1,10 @@
-APP_CSS ="""
+APP_CSS = """
 <style>
         body {
-            background-color: #ECE3ED;
+            background-color: #E9F7E9; /* Slight faint green background */
         }
         .stApp {
-            background-color: #ECE3ED;
+            background-color: #E9F7E9; /* Matching the background color */
             padding: 20px;
         }
         .stImage {
@@ -19,7 +19,7 @@ APP_CSS ="""
             padding-top: 100px;
         }
         .stButton button {
-            background-color: #5F249F;
+            background-color: #000000; /* Black button */
             color: #FFFFFF;
             width: 100%;
         }
@@ -27,15 +27,13 @@ APP_CSS ="""
             width: 100%;
             padding: 10px;
             margin: 5px 0;
+            border: 1px solid #000000; /* Black border */
         }
         .sidebar .stButton button {
-            background-color: #6aa84f;
+            background-color: #4B8A2B; /* Darker green for sidebar buttons */
             color: #FFFFFF;
             width: 100%;
             margin-bottom: 10px;
         }
-    </style>
-
-
-
+</style>
 """
