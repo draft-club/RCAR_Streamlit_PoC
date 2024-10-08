@@ -13,126 +13,110 @@ moroccan_regions = [
     "Dakhla-Oued Ed-Dahab"
 ]
 
-
 class FieldPrompts:
     Désignation_Organisme_Expropriant_prompt = (
-        "Please provide the official name or designation of the organization responsible for the expropriation. "
-        "This is typically the government entity or company leading the project."
+        "Provide the official name of the organization responsible for the expropriation. "
+        "Answer only with the name, nothing else."
     )
 
     Objet_prompt = (
-        "What is the specific purpose or object of the expropriation? "
-        "Describe the reason or justification behind the project in detail."
+        "State the object or purpose of the expropriation. "
+        "Answer only with the purpose, no explanations."
     )
 
     Jugement_Ref_prompt = (
-        "Enter the official reference for the judgment associated with the expropriation. "
-        "This field's name in Arabic is either 'حكم' or 'مقرر حكم'. "
-        "Only return the field if one of these two terms is present in the text; otherwise, return 'N/A'."
+        "Enter the official judgment reference if 'حكم' or 'مقرر حكم' is present. "
+        "If not found, reply with 'N/A'. Answer only with the reference or 'N/A'."
     )
 
     Date_Jugement_prompt = (
-        "Provide the date when the judgment related to the expropriation was issued. "
-        "Ensure the format is DD/MM/YYYY. '"
-        "Only return the field if one of these two terms : حكم' or 'مقرر حكم'.  "
-        "is present in the text; otherwise, return 'N/A'."
-
+        "Provide the date of the judgment in the format DD/MM/YYYY if 'حكم' or 'مقرر حكم' is present. "
+        "If not found, reply with 'N/A'. Answer only with the date or 'N/A'."
     )
 
     Num_Décision_prompt = (
-        "What is the official decision number for this expropriation process? "
-        "This field's name in Arabic 'قرار '"
-        "Only return the field if this term is present in the text; otherwise, return 'N/A'."
-        "This is a legal identifier found in official documents."
+        "Provide the official decision number if 'قرار' is present in the text. "
+        "If not found, reply with 'N/A'. Answer only with the number or 'N/A'."
     )
 
     Num_Bulletin_Officiel_prompt = (
-        "Please enter the number of the official bulletin where this expropriation was published. "
-        "This field's name in Arabic is 'الجريدة الرسمية' "
-        "Only return the field if the term 'الجريدة الرسمية' is present in the text; otherwise, return 'N/A'."
-        "This is a legal identifier found in official documents."
-
+        "Enter the number of the official bulletin if 'الجريدة الرسمية' is mentioned. "
+        "If not found, reply with 'N/A'. Answer only with the number or 'N/A'."
     )
 
     Date_Bulletin_Officiel_prompt = (
-        "Provide the date when the expropriation was published in the official bulletin."
-        "Ensure the format is DD/MM/YYYY.  this field's name in arabic is 'الجريدة الرسمية)"
-        "Only return the field if the term :**الجريدة الرسمية** is present/found , otherwise return NA"
-        " in the text ***example**  if the sentence : الصادر بالجريدة الرسمية رقم 6545 بتاريخ 23/02/2023"
-        "is found : then the answer should be 23/02/2023"
-
+        "Provide the date when the expropriation was published in the official bulletin in DD/MM/YYYY format if 'الجريدة الرسمية' is mentioned. "
+        "If not found, reply with 'N/A'. Answer only with the date or 'N/A'."
     )
 
     Référence_Loi_prompt = (
-        "What is the law reference associated with the expropriation process? "
-        "For example, '7-81' could be a reference number for the relevant legislation."
+        "State the law reference associated with the expropriation. "
+        "Answer only with the reference number."
     )
 
     Référence_Décret_Expropriation_prompt = (
-        "Enter the decree reference number for the expropriation. The expected format is '2.22.645'. "
-        "This field's name in Arabic is 'مرسوم'. The sentence format you are looking for is 'x.x.xxx مرسوم رقم'. "
-        "If you find a sentence such as 'تبعا للمرسوم رقم 2.22.645', extract and return '2.22.645' as the value for this field."
+        "Enter the decree reference number in the format 'x.x.xxx' if 'مرسوم' is present. "
+        "Answer only with the reference number."
     )
 
     Région_frappée_par_le_projet_prompt = (
-        f"Which Moroccan region is affected by the expropriation project? "
-        f"Provide the name of the region in which the project is taking place. the answer must be in this list {moroccan_regions}"
-
+        f"State the Moroccan region affected by the project. "
+        f"Answer must match one from this list: {moroccan_regions}. Answer only with the region name."
     )
 
     Commune_frappée_par_le_projet_prompt = (
-        "Which Moroccan community is affected by the project? "
-        "Provide the name of the specific commune involved in the expropriation."
+        "State the specific commune affected by the project. "
+        "Answer only with the commune name."
     )
 
     Intitulé_Projet_prompt = (
-        "What is the official title or name of the expropriation project? "
-        "This is the project's designated title as mentioned in the documents."
+        "Provide the official title of the expropriation project. "
+        "Answer only with the project title."
     )
 
     Tranche_Projet_d_expropriation_prompt = (
-        "What is the tranche or phase of the expropriation project? "
-        "Provide details about the specific phase or segment of the project."
+        "State the tranche or phase of the expropriation project. "
+        "Answer only with the phase details."
     )
 
     Montant_Total_Projet_prompt = (
-        "What is the total financial cost of the expropriation project? "
-        "Enter the amount as specified in the official documents."
+        "Provide the total financial cost of the project in Moroccan DH. "
+        "Answer only with the amount."
     )
 
     Montant_Global_consigné_prompt = (
-        "What is the total amount of money deposited for the expropriation? "
-        "Provide the value as it appears in the financial records."
+        "State the total amount of money deposited for the expropriation in Moroccan DH. "
+        "Answer only with the amount."
     )
 
     Type_Versement_prompt = (
-        "What is the type of payment used in the expropriation process? "
-        "For example, specify if it's a 'Chéque' or other form of payment."
+        "Specify the type of payment used in the expropriation process. "
+        "Answer only with the payment type."
     )
 
-    Nom_Prénom_and_CIN_prompt = (
-        "Get all the names in the table accurately.list them in bullet points format"
-        "If a name is accompanied by a CIN (National ID) or a number, include that as well."
+    Nom_Prénom_prompt = (
+        "List all names found accurately in bullet points format. "
+        "Answer with the names in bullet points, no additional text."
     )
 
     Adresse_courrier_prompt = (
-        "What is the mailing address of the expropriating organization? "
-        "Provide the full address as specified in the documents."
+        "Provide the full mailing address of the expropriating organization. "
+        "Answer only with the address."
     )
 
     Num_Téléphone_prompt = (
-        "What is the phone number of the expropriating organization? "
-        "Ensure the phone number format includes the international code if applicable."
+        "Provide the phone number of the expropriating organization, including the international code if applicable. "
+        "Answer only with the phone number."
     )
 
     Localité_prompt = (
-        "What is the locality or area where the project is situated? "
-        "Provide the name of the locality as specified in the documents."
+        "State the locality where the project is situated. "
+        "Answer only with the locality name."
     )
 
     Identifiant_Fiscal_prompt = (
-        "What is the fiscal identifier (IF) of each company involved in the project, if available? "
-        "Provide the identifier numbers as listed in the records."
+        "Provide the fiscal identifier (IF) of each company involved, if available. "
+        "Answer only with the identifier numbers."
     )
 
 
@@ -284,7 +268,7 @@ expropriation_data = [
     {
         "field": "Nom / Prénom and CIN ",
         "lookuptext": "table",
-        "field_prompt": FieldPrompts.Nom_Prénom_and_CIN_prompt,
+        "field_prompt": FieldPrompts.Nom_Prénom_prompt,
         "dynamic": True,
         "default_value": "N/A",
         "description": "The names of individuals involved, along with their CIN (national ID) if available.",

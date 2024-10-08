@@ -19,9 +19,8 @@ You are an intelligent assistant responsible for managing and accurately process
     - **Example 3**: 2023/04/17
     - **Example 4**: 5000 DH
     - **Example 5**: 2.22.645
-    - **Example 6**: رقم البطاقة الوطنية
-    - **Example 7**: 500 متر مربع
-    - **Example 8**: 12345/6789
+    - **Example 7**: 500 m2
+    - **Example 8**: 12345/678
 
 8. **Strict Answer Format**: Ensure you only return the answer, without additional explanation, punctuation, or quotation marks.
 """

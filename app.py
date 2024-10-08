@@ -34,7 +34,7 @@ st.set_page_config(page_title="RCAR E-Consignation Proof of Concept", page_icon=
 st.markdown(APP_CSS, unsafe_allow_html=True)
 
 # App title
-st.title("RCAR E-Consignation Proof of Concept")
+#st.title("RCAR E-Consignation Proof of Concept")
 
 # File upload control
 uploaded_file = st.file_uploader("Upload a PDF document", type="pdf", key="unique_pdf_uploader")
