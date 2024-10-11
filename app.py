@@ -30,8 +30,9 @@ config = load_config()
 # Set page configuration
 st.set_page_config(page_title="RCAR E-Consignation Proof of Concept", page_icon=":keyboard:")
 
+
 # Apply custom CSS
-st.markdown(APP_CSS, unsafe_allow_html=True)
+#st.markdown(APP_CSS, unsafe_allow_html=True)
 
 # App title
 st.title("RCAR E-Consignation Proof of Concept")
