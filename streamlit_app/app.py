@@ -2,6 +2,12 @@ import streamlit as st
 import time
 import pandas as pd
 from PIL import Image, ImageEnhance
+import json
+import io
+import os
+
+from column_standarizer.constants import REFERENCE_COLUMNS
+from new_main_2 import preprocess_image
 from utils import (
     read_pdfs_from_folder,
     convert_pdf_to_images,
@@ -12,81 +18,27 @@ from paths import OUTPUT_IMAGES_PATH, OUTPUT_TEXT_PATH, INPUT_PDFS_PATH
 from config import load_config
 from textify_docs.tables.table_extracter import extract_tables_from_image_as_dict
 from openai import OpenAI, APIConnectionError, RateLimitError
-import json
-import os
+from openai_local.refrence_dictionaries.target_fields import expropriation_data
+from openai_local.utils import get_field_from_text, setup_openai
+from openai_local.prompts import MAIN_PROMPT
+from app_css import APP_CSS
+from constants import STAGES
 
 # Load configuration
 config = load_config()
 
-# Initialize OpenAI client with API key from config.yaml
-client = OpenAI(api_key=config['openai_api_key'])
+# Set page configuration
+st.set_page_config(page_title="RCAR E-Consignation Proof of Concept", page_icon=":keyboard:")
 
-# App name
+
+# Apply custom CSS
+#st.markdown(APP_CSS, unsafe_allow_html=True)
+
+# App title
 st.title("RCAR E-Consignation Proof of Concept")
 
-# Progress stages
-STAGES = [
-    "Converting PDF to images",
-    "Enhancing image quality and contrast",
-    "Removing header and footer",
-    "Detecting tables",
-    "Merging tables",
-    "Normalizing columns",
-    "Extracting text",
-    "Converting output to JSON",
-    "Extracting fields",
-]
-
-
-def enhance_arabic_text(text, max_retries=5):
-    """Enhances and corrects Arabic text using GPT-4, with rate limit and connection error handling."""
-    retries = 0
-    while retries < max_retries:
-        try:
-            # Call OpenAI API using the correct format
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": "You are an expert in Arabic grammar and spelling. Your task is to correct any spelling errors in the provided Arabic text accurately. Follow these specific rules:"
-                                                  "If the input is entirely in Arabic, correct any spelling mistakes and return only the corrected text.Example:Input: اللغت العربيه جميله جداOutput: اللغة العربية جميلة جدًا"
-                                                  "If the input is not Arabic, return it exactly as it is, without changes."
-                                                  "Example:"
-                                                  "Input: This is not Arabic."
-                                                  "Output: This is not Arabic."
-                                                  "If the input is a number, return the number as it is."
-                                                  "Example:"
-                                                  "Input: 12345"
-                                                  "Output: 12345"
-                                                  "If the input is a mix of Arabic and another language, correct only the Arabic part and return the rest unchanged."
-                                                  "Example:"
-                                                  "Input: I love اللغت العربيه."
-                                                  "Output: I love اللغة العربية."
-                                                  "In all cases, return only the corrected content without any additional comments or explanations."},
-                    {"role": "user", "content": f"Enhance and correct the following Arabic text: {text}"}
-                ]
-            )
-            # Access the response content correctly
-            return response.choices[0].message.content
-
-        except RateLimitError:
-            # Handle rate limit errors by waiting and retrying
-            retries += 1
-            wait_time = 2 ** retries  # Exponential backoff (2, 4, 8, 16, 32 seconds)
-            st.warning(f"Rate limit exceeded. Retrying in {wait_time} seconds...")
-            time.sleep(wait_time)
-
-        except APIConnectionError:
-            # Handle API connection errors and retry
-            retries += 1
-            wait_time = 2 ** retries
-            st.warning(f"Connection error. Retrying in {wait_time} seconds...")
-            time.sleep(wait_time)
-
-    raise Exception("Maximum retries reached. Failed to enhance text due to rate limits or connection issues.")
-
-
 # File upload control
-uploaded_file = st.file_uploader("Upload a PDF document", type="pdf")
+uploaded_file = st.file_uploader("Upload a PDF document", type="pdf", key="unique_pdf_uploader")
 
 if uploaded_file is not None:
     # Validate file type
@@ -124,9 +76,9 @@ if uploaded_file is not None:
         # Step 3: Remove header and footer
         status_text.text(STAGES[2])
         cropped_images = []
+        header = config["header_margin"]
+        footer = config["footer_margin"]
         for image in enhanced_images:
-            header = config["header_margin"]
-            footer = config["footer_margin"]
             cropped_image = image.crop((0, header, image.width, image.height - footer))
             cropped_images.append(cropped_image)
         progress_bar.progress(3 / len(STAGES))
@@ -162,44 +114,84 @@ if uploaded_file is not None:
         progress_bar.progress(5 / len(STAGES))
 
         # Step 6: Normalize columns
-        """status_text.text(STAGES[5])
-        for col in df.columns:
-            df[col] = df[col].apply(lambda text: enhance_arabic_text(text) if isinstance(text, str) else text)
-        progress_bar.progress(6 / len(STAGES))"""
+        input_columns_list = df.columns.to_list()
+        # Assuming a column standardization function exists
+        #standardized_names_list = standardize_columns(input_columns_list)
 
         # Step 7: Extract text
         status_text.text(STAGES[6])
         extracted_text = extract_text_from_images(image_files, OUTPUT_IMAGES_PATH, config)
-
         save_extracted_text(pdf_file_name, extracted_text, OUTPUT_TEXT_PATH)
         progress_bar.progress(7 / len(STAGES))
 
         # Step 8: Convert output to JSON
         status_text.text(STAGES[7])
         json_output = df.to_dict(orient="records")
+        st.json(json_output)
+        # Convert the JSON output to a formatted string
+        json_string = json.dumps(json_output, ensure_ascii=False, indent=4)
+
+        # Export the JSON string to a text file
+        output_txt = io.BytesIO()
+        output_txt.write(json_string.encode('utf-8'))
+        output_txt.seek(0)
+
+        # Create a download button for the JSON text file
+        st.download_button(
+            label="Download JSON Output as Text File",
+            data=output_txt,
+            file_name="extracted_data.txt",
+            mime="text/plain"
+        )
         progress_bar.progress(8 / len(STAGES))
 
-        # Step 9: Extract fields (dummy step)
+        # Step 9: Extract fields using OpenAI
         status_text.text(STAGES[8])
-        extracted_fields_dict = {"Texts": extracted_text, "Tables": json_output}  # Example extracted fields
+        client = OpenAI(api_key=setup_openai())
+        results = []
+
+        TEXT = extracted_text
+        TABLE = extracted_text
+
+        for item in expropriation_data:
+            field = item.get("field")
+            field_prompt = item.get("field_prompt")
+            lookuptext = item.get("lookuptext")
+            dynamic = item.get("dynamic")
+            default_value = item.get("default_value")
+
+            if dynamic:
+                response = get_field_from_text(client, MAIN_PROMPT, field_prompt, TEXT if lookuptext == "text" else TABLE, field)
+            else:
+                response = default_value
+
+            results.append({'Champs': field, 'Valeur': response})
+
+        df = pd.DataFrame(results)
         progress_bar.progress(9 / len(STAGES))
+
+        # Step 10: Analyze LLM Response (placeholder)
+        status_text.text(STAGES[9])
+        progress_bar.progress(10 / len(STAGES))
+
+        # Export DataFrame to Excel
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            df.to_excel(writer, index=False)
+        output.seek(0)
 
         # Display final output
         st.success("Processing completed!")
-        #st.subheader("Extracted Table Data (first 10 rows):")
-        #st.dataframe(df.head(10))
+        st.write("### Expropriation Data Results")
+        st.dataframe(df)
 
-        # Provide download link for JSON
-        json_string = json.dumps(extracted_fields_dict, ensure_ascii=False, indent=4)
+        # Download Excel file
         st.download_button(
-            label="Download JSON Output",
-            data=json_string,
-            file_name="extracted_data.json",
-            mime="application/json",
+            label="Download Excel Output",
+            data=output,
+            file_name="extracted_data.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
-
-        st.subheader("Extracted Fields:")
-        st.json(json_output)
 
 else:
     st.info("Please upload a PDF document to begin.")

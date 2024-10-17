@@ -1,5 +1,0 @@
-Levenshtein
-scikit-learn
-nltk
-PyYAML
-tabulate
